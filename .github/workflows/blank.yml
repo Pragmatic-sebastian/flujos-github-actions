@@ -8,15 +8,16 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SUBMODULES: "l10n_co_base l10n_co_cei l10n_co_payroll"
-      TARGET_BRANCH: "18.0"
+      AMBIENTE: "master"
+      LOCALIZACIONES: "l10n_co_base l10n_co_cei l10n_co_payroll"
+      VERSION_ODOO_CLIENTE: "18.0"
 
     steps:
 
     # 1. Checkout repo del cliente (externo)
-    - name: Checkout external repo (cliente)
+    - name: Clonar Repositorio $AMBIENTE del cliente
       run: |
-        git clone https://USERNAME:${{ secrets.CLIENT_REPO_TOKEN }}@github.com/Pragmatic-sebastian/trial-github-actions.git cliente_repo
+        git clone https://USERNAME:${{ secrets.CLIENT_REPO_TOKEN }}@github.com/Pragmatic-sebastian/trial-github-actions.git --branch $AMBIENTE cliente_repo
         cd cliente_repo
         ls
       shell: bash
