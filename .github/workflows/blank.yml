@@ -23,6 +23,11 @@ jobs:
         cd l10n_co_base
         ls
 
+    - name: Forzar submódulos a usar HTTPS
+      run: |
+        config --global url."https://x-access-token:${{ secrets.CLIENT_REPO_TOKEN }}@github.com/".insteadOf "git@github.com:"
+      
+
     # 2. Inicializar submódulos
     - name: Inicializar submódulos
       run: |
