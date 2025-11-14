@@ -61,23 +61,27 @@ jobs:
         done
 
       # 6. Verificar Cambios
-    - name: Actualizar localizaciones
+    - name: Verificar Cambios
       run: |
         cd cliente_repo
         git status
         cat l10n_co_base/__manifest__.py
 
-    # # 4. Commit
-    # - name: Commit
-    #   run: |
-    #     cd external
-    #     git config user.name "GitHub Actions"
-    #     git config user.email "actions@github.com"
-    #     git add .
-    #     git commit -m "Actualización automática submódulos: $LOCALIZACIONES (rama $RAMA_MODULO)" || echo "Sin cambios"
+    # 4. Comentar los cambios realizados en las localizaciones
+    - name: Comentando Cambios
+      run: |
+        cd cliente_repo
+        
+        git add .
+        git commit -m "Actualización automática de localizaciones: $LOCALIZACIONES (rama $RAMA_MODULO)" || echo "Sin cambios"
+
+
+  # git config user.name "GitHub Actions"
+  #       git config user.email "actions@github.com"      
+
 
     # # 6. Push final
     # - name: Push
     #   run: |
-    #     cd external
+    #     cd cliente_repo
     #     git push origin HEAD:main
