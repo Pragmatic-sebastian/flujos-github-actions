@@ -71,13 +71,10 @@ jobs:
     - name: Comentando Cambios
       run: |
         cd cliente_repo
-        
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"  
         git add .
         git commit -m "Actualización automática de localizaciones: $LOCALIZACIONES (rama $RAMA_MODULO)" || echo "Sin cambios"
-
-
-  # git config user.name "GitHub Actions"
-  #       git config user.email "actions@github.com"      
 
 
     # # 6. Push final
