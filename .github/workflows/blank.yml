@@ -76,7 +76,6 @@ jobs:
         git add .
         git commit -m "Actualización automática de localizaciones: $LOCALIZACIONES (rama $RAMA_MODULO)" || echo "Sin cambios"
 
-
     # 6. Enviar Cambios
     - name: Enviar Cambios
       run: |
