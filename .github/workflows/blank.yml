@@ -10,7 +10,7 @@ jobs:
     env:
       AMBIENTE: "master"
       LOCALIZACIONES: "l10n_co_base l10n_co_cei l10n_co_payroll"
-      RAMA_MODULO: "develop-17.0"
+      RAMA_MODULO: "develop-18.0"
 
     steps:
 
@@ -77,8 +77,8 @@ jobs:
         git commit -m "Actualización automática de localizaciones: $LOCALIZACIONES (rama $RAMA_MODULO)" || echo "Sin cambios"
 
 
-    # # 6. Push final
-    # - name: Push
-    #   run: |
-    #     cd cliente_repo
-    #     git push origin HEAD:main
+    # 6. Enviar Cambios
+    - name: Enviar Cambios
+      run: |
+        cd cliente_repo
+        git push
