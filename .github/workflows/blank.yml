@@ -25,7 +25,7 @@ jobs:
 
     - name: Forzar submódulos a usar HTTPS
       run: |
-        config --global url."https://x-access-token:${{ secrets.CLIENT_REPO_TOKEN }}@github.com/".insteadOf "git@github.com:"
+        git config --global url."https://x-access-token:${{ secrets.CLIENT_REPO_TOKEN }}@github.com/".insteadOf "git@github.com:"
       
 
     # 2. Inicializar submódulos
