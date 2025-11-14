@@ -1,85 +1,60 @@
-name: Clone and List
+name: Actualizar Localizaciones Pragmatic
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 6 * * *"  # Cada día a las 6 AM (ajústalo si quieres)
 
 jobs:
-  clone-and-list:
+  update-submodules:
     runs-on: ubuntu-latest
 
+    env:
+      SUBMODULES: "l10n_co_base l10n_co_cei l10n_co_payroll"
+      TARGET_BRANCH: "18.0"
+
     steps:
-      - name: Checkout this repo
-        uses: actions/checkout@v4
 
-      - name: Clonar repositorio privado del cliente
-        run: |
-          git clone https://USERNAME:${{ secrets.CLIENT_REPO_TOKEN }}@github.com/Pragmatic-sebastian/trial-github-actions.git cliente_repo
+    # 1. Checkout repo del cliente (externo)
+    - name: Checkout external repo (cliente)
+      run: |
+        git clone https://USERNAME:${{ secrets.CLIENT_REPO_TOKEN }}@github.com/Pragmatic-sebastian/trial-github-actions.git cliente_repo
+        cd cliente_repo
+        ls
+      shell: bash
 
-      - name: Listar directorios dentro del repo clonado
-        run: |
-          echo "Carpetas encontradas:"
-          cd cliente_repo
-          ls
+    # # 2. Inicializar submódulos
+    # - name: Inicializar submódulos
+    #   run: |
+    #     cd external
+    #     git submodule update --init --recursive
 
+    # # 3. Actualizar solo submódulos requeridos
+    # - name: Actualizar submódulos requeridos
+    #   run: |
+    #     cd external
+    #     for module in $SUBMODULES; do
+    #       if [ -d "$module" ]; then
+    #         echo "Actualizando $module ..."
+    #         cd "$module"
+    #         git fetch origin
+    #         git checkout "$TARGET_BRANCH"
+    #         git pull origin "$TARGET_BRANCH"
+    #         cd -
+    #       else
+    #         echo "El submódulo $module NO existe"
+    #       fi
+    #     done
 
-# name: Actualizar Localizaciones Pragmatic
+    # # 4. Commit
+    # - name: Commit
+    #   run: |
+    #     cd external
+    #     git config user.name "GitHub Actions"
+    #     git config user.email "actions@github.com"
+    #     git add .
+    #     git commit -m "Actualización automática submódulos: $SUBMODULES (rama $TARGET_BRANCH)" || echo "Sin cambios"
 
-# on:
-#   workflow_dispatch:
-
-# jobs:
-#   update-submodules:
-#     runs-on: ubuntu-latest
-
-#     env:
-#       SUBMODULES: "l10n_co_base l10n_co_cei l10n_co_payroll"
-#       TARGET_BRANCH: "18.0"
-
-#     steps:
-
-#     # 1. Checkout repo del cliente (externo)
-#     - name: Checkout external repo (cliente)
-#       run: |
-#         git clone https://x-access-token:${{ secrets.TOKEN_ODOO_SH }}@github.com/Pragmatic-sebastian/trial-github-actions.git external
-#         cd external
-#       shell: bash
-
-#     # 2. Inicializar submódulos
-#     - name: Inicializar submódulos
-#       run: |
-#         cd external
-#         git submodule update --init --recursive
-
-#     # 3. Actualizar solo submódulos requeridos
-#     - name: Actualizar submódulos requeridos
-#       run: |
-#         cd external
-#         for module in $SUBMODULES; do
-#           if [ -d "$module" ]; then
-#             echo "Actualizando $module ..."
-#             cd "$module"
-#             git fetch origin
-#             git checkout "$TARGET_BRANCH"
-#             git pull origin "$TARGET_BRANCH"
-#             cd -
-#           else
-#             echo "El submódulo $module NO existe"
-#           fi
-#         done
-
-#     # 4. Commit
-#     - name: Commit
-#       run: |
-#         cd external
-#         git config user.name "GitHub Actions"
-#         git config user.email "actions@github.com"
-#         git add .
-#         git commit -m "Actualización automática submódulos: $SUBMODULES (rama $TARGET_BRANCH)" || echo "Sin cambios"
-
-#     # 6. Push final
-#     - name: Push
-#       run: |
-#         cd external
-#         git push origin HEAD:main
+    # # 6. Push final
+    # - name: Push
+    #   run: |
+    #     cd external
+    #     git push origin HEAD:main
