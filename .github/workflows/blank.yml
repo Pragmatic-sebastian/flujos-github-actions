@@ -1,68 +1,59 @@
 name: Actualizar Localizaciones Pragmatic
 
 on:
-  workflow_dispatch:  # Solo ejecución manual
+  workflow_dispatch:
 
 jobs:
   update-submodules:
     runs-on: ubuntu-latest
 
     env:
-      # Submódulos a actualizar
       SUBMODULES: "l10n_co_base l10n_co_cei l10n_co_payroll"
-
-      # Rama de destino ya definida (AJÚSTALA AQUÍ)
       TARGET_BRANCH: "18.0"
 
     steps:
 
-    # 1. Clonar el repositorio externo del cliente
+    # 1. Checkout repo del cliente (externo)
     - name: Checkout external repo (cliente)
-      uses: actions/checkout@v4
-      with:
-        repository: Pragmatic-sebastian/trial-github-actions
-        ref: master
-        token: ${{ secrets.TOKEN_ODOO_SH }}
-        submodules: false
+      run: |
+        git clone https://x-access-token:${{ secrets.TOKEN_ODOO_SH }}@github.com/Pragmatic-sebastian/trial-github-actions.git external
+        cd external
+      shell: bash
 
     # 2. Inicializar submódulos
     - name: Inicializar submódulos
-      run: git submodule update --init --recursive
+      run: |
+        cd external
+        git submodule update --init --recursive
 
-    # 3. Actualizar solo los submódulos requeridos
+    # 3. Actualizar solo submódulos requeridos
     - name: Actualizar submódulos requeridos
       run: |
-        echo "==> Submódulos a actualizar: $SUBMODULES"
-        echo "==> Rama destino: $TARGET_BRANCH"
-
+        cd external
         for module in $SUBMODULES; do
           if [ -d "$module" ]; then
-            echo "----> Actualizando $module ..."
+            echo "Actualizando $module ..."
             cd "$module"
-
             git fetch origin
-
-            # Cambiar a la rama fija
             git checkout "$TARGET_BRANCH"
             git pull origin "$TARGET_BRANCH"
-
             cd -
           else
-            echo "⚠️  El submódulo $module NO existe. Omitiendo."
+            echo "El submódulo $module NO existe"
           fi
         done
 
-    # 4. Commit de cambios
-    - name: Commit de cambios
+    # 4. Commit
+    - name: Commit
       run: |
-        git add .
+        cd external
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
-        
-        git commit -m "Actualización automática de submódulos: $SUBMODULES (rama $TARGET_BRANCH)" \
-          || echo "No hay cambios para commitear"
+        git add .
+        git commit -m "Actualización automática submódulos: $SUBMODULES (rama $TARGET_BRANCH)" || echo "Sin cambios"
 
-    # 5. Push al repositorio externo
-    - name: Push de cambios
+    # 6. Push final
+    - name: Push
       run: |
-        git push origin HEAD:${{ github.ref_name }} --recurse-submodules=on-demand
+        cd external
+        git push origin HEAD:main
