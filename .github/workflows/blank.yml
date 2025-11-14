@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-submodules:
+  actualizar-localizaciones:
     runs-on: ubuntu-latest
 
     env:
@@ -14,31 +14,41 @@ jobs:
 
     steps:
 
-    # 1. Checkout repo del cliente (externo)
+    # 1. Clonacion de Repositorio de Cliente
     - name: Clonar Repositorio $AMBIENTE del cliente
       run: |
         git clone https://USERNAME:${{ secrets.CLIENT_REPO_TOKEN }}@github.com/Pragmatic-sebastian/trial-github-actions.git --branch $AMBIENTE cliente_repo
         cd cliente_repo
         ls
-      shell: bash
+        cd l10n_co_base
+        ls
 
-    # # 2. Inicializar submódulos
-    # - name: Inicializar submódulos
-    #   run: |
-    #     cd external
-    #     git submodule update --init --recursive
+    # 2. Inicializar submódulos
+    - name: Inicializar submódulos
+      run: |
+        cd cliente_repo
+        git submodule init
 
-    # # 3. Actualizar solo submódulos requeridos
-    # - name: Actualizar submódulos requeridos
+    # 3. Actualizar submódulos
+    - name: Actualizar submódulos
+      run: |
+        cd cliente_repo
+        git submodule update $LOCALIZACIONES
+        cd l10n_co_base
+        ls
+    
+
+    # # 3. Actualizar solo submódulos de las localizaciones
+    # - name: Actualizar submódulos localizaciones
     #   run: |
-    #     cd external
-    #     for module in $SUBMODULES; do
+    #     cd cliente_repo
+    #     for module in $LOCALIZACIONES; do
     #       if [ -d "$module" ]; then
     #         echo "Actualizando $module ..."
     #         cd "$module"
     #         git fetch origin
-    #         git checkout "$TARGET_BRANCH"
-    #         git pull origin "$TARGET_BRANCH"
+    #         git checkout "$VERSION_ODOO_CLIENTE"
+    #         git pull origin "$VERSION_ODOO_CLIENTE"
     #         cd -
     #       else
     #         echo "El submódulo $module NO existe"
@@ -52,7 +62,7 @@ jobs:
     #     git config user.name "GitHub Actions"
     #     git config user.email "actions@github.com"
     #     git add .
-    #     git commit -m "Actualización automática submódulos: $SUBMODULES (rama $TARGET_BRANCH)" || echo "Sin cambios"
+    #     git commit -m "Actualización automática submódulos: $LOCALIZACIONES (rama $VERSION_ODOO_CLIENTE)" || echo "Sin cambios"
 
     # # 6. Push final
     # - name: Push
