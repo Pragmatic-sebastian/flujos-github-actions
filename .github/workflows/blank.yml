@@ -20,7 +20,8 @@ jobs:
       - name: Listar directorios dentro del repo clonado
         run: |
           echo "Carpetas encontradas:"
-          ls -d cliente_repo/*/
+          cd cliente_repo
+          ls
 
 
 # name: Actualizar Localizaciones Pragmatic
