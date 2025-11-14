@@ -15,7 +15,7 @@ jobs:
 
       - name: Clonar repositorio privado del cliente
         run: |
-          git clone https://USERNAME:${{ secrets.CLIENT_REPO_TOKEN }}@github.com/CLIENT_ORG/CLIENT_REPO.git cliente_repo
+          git clone https://USERNAME:${{ secrets.CLIENT_REPO_TOKEN }}@github.com/Pragmatic-sebastian/trial-github-actions.git cliente_repo
 
       - name: Listar directorios dentro del repo clonado
         run: |
