@@ -10,7 +10,7 @@ jobs:
     env:
       AMBIENTE: "master"
       LOCALIZACIONES: "l10n_co_base l10n_co_cei l10n_co_payroll"
-      VERSION_ODOO_CLIENTE: "18.0"
+      RAMA_MODULO: "develop-17.0"
 
     steps:
 
@@ -23,18 +23,19 @@ jobs:
         cd l10n_co_base
         ls
 
+    # 2. Forzar a los submodulos a usar HTTPS (Se hace de esta forma para evitar error y usar la llave ya generada)    
     - name: Forzar submódulos a usar HTTPS
       run: |
         git config --global url."https://x-access-token:${{ secrets.CLIENT_REPO_TOKEN }}@github.com/".insteadOf "git@github.com:"
       
 
-    # 2. Inicializar submódulos
+    # 3. Inicializar submódulos
     - name: Inicializar submódulos
       run: |
         cd cliente_repo
         git submodule init
 
-    # 3. Actualizar submódulos
+    # 4. Actualizar submódulos
     - name: Actualizar submódulos
       run: |
         cd cliente_repo
@@ -43,22 +44,24 @@ jobs:
         ls
     
 
-    # # 3. Actualizar solo submódulos de las localizaciones
-    # - name: Actualizar submódulos localizaciones
-    #   run: |
-    #     cd cliente_repo
-    #     for module in $LOCALIZACIONES; do
-    #       if [ -d "$module" ]; then
-    #         echo "Actualizando $module ..."
-    #         cd "$module"
-    #         git fetch origin
-    #         git checkout "$VERSION_ODOO_CLIENTE"
-    #         git pull origin "$VERSION_ODOO_CLIENTE"
-    #         cd -
-    #       else
-    #         echo "El submódulo $module NO existe"
-    #       fi
-    #     done
+    # 5. Actualizar cada modulo de localizacion
+    - name: Actualizar localizaciones
+      run: |
+        cd cliente_repo
+        for modulo in $LOCALIZACIONES; do
+          if [ -d "$modulo" ]; then
+            echo "Actualizando $modulo ..."
+            cd "$modulo"
+            git checkout "$RAMA_MODULO"
+            git pull
+            cd -
+          else
+            echo "El submódulo $modulo NO existe"
+          fi
+        done
+
+
+
 
     # # 4. Commit
     # - name: Commit
@@ -67,7 +70,7 @@ jobs:
     #     git config user.name "GitHub Actions"
     #     git config user.email "actions@github.com"
     #     git add .
-    #     git commit -m "Actualización automática submódulos: $LOCALIZACIONES (rama $VERSION_ODOO_CLIENTE)" || echo "Sin cambios"
+    #     git commit -m "Actualización automática submódulos: $LOCALIZACIONES (rama $RAMA_MODULO)" || echo "Sin cambios"
 
     # # 6. Push final
     # - name: Push
