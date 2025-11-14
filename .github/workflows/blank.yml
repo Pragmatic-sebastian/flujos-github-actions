@@ -1,36 +1,68 @@
-# This is a basic workflow to help you get started with Actions
+name: Actualizar Localizaciones Pragmatic
 
-name: Actualizar Localizaciones Ambiente Trial Sebas
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:  # Solo ejecución manual
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  update-submodules:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    env:
+      # Submódulos a actualizar
+      SUBMODULES: "l10n_co_base l10n_co_cei l10n_co_payroll"
+
+      # Rama de destino ya definida (AJÚSTALA AQUÍ)
+      TARGET_BRANCH: "18.0"
+
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+    # 1. Clonar el repositorio externo del cliente
+    - name: Checkout external repo (cliente)
+      uses: actions/checkout@v4
+      with:
+        repository: Pragmatic-sebastian/trial-github-actions
+        ref: master
+        token: ${{ secrets.TOKEN_ODOO_SH }}
+        submodules: false
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+    # 2. Inicializar submódulos
+    - name: Inicializar submódulos
+      run: git submodule update --init --recursive
+
+    # 3. Actualizar solo los submódulos requeridos
+    - name: Actualizar submódulos requeridos
+      run: |
+        echo "==> Submódulos a actualizar: $SUBMODULES"
+        echo "==> Rama destino: $TARGET_BRANCH"
+
+        for module in $SUBMODULES; do
+          if [ -d "$module" ]; then
+            echo "----> Actualizando $module ..."
+            cd "$module"
+
+            git fetch origin
+
+            # Cambiar a la rama fija
+            git checkout "$TARGET_BRANCH"
+            git pull origin "$TARGET_BRANCH"
+
+            cd -
+          else
+            echo "⚠️  El submódulo $module NO existe. Omitiendo."
+          fi
+        done
+
+    # 4. Commit de cambios
+    - name: Commit de cambios
+      run: |
+        git add .
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        
+        git commit -m "Actualización automática de submódulos: $SUBMODULES (rama $TARGET_BRANCH)" \
+          || echo "No hay cambios para commitear"
+
+    # 5. Push al repositorio externo
+    - name: Push de cambios
+      run: |
+        git push origin HEAD:${{ github.ref_name }} --recurse-submodules=on-demand
