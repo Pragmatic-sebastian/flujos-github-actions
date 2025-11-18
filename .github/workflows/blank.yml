@@ -10,7 +10,7 @@ jobs:
     env:
       AMBIENTE: "master"
       LOCALIZACIONES: "l10n_co_base l10n_co_cei l10n_co_payroll"
-      RAMA_MODULO: "develop-18.0"
+      RAMA_MODULO: "18.0"
 
     steps:
 
@@ -43,7 +43,6 @@ jobs:
         cd l10n_co_base
         ls
     
-
     # 5. Actualizar cada modulo de localizacion
     - name: Actualizar localizaciones
       run: |
@@ -68,7 +67,7 @@ jobs:
         cat l10n_co_base/__manifest__.py
 
     # 4. Comentar los cambios realizados en las localizaciones
-    - name: Comentando Cambios
+    - name: Comentar Cambios
       run: |
         cd cliente_repo
         git config user.name "GitHub Actions"
