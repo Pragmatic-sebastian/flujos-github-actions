@@ -10,7 +10,7 @@ jobs:
     env:
       AMBIENTE: "master"
       LOCALIZACIONES: "l10n_co_base l10n_co_cei l10n_co_payroll"
-      RAMA_MODULO: "17.0"
+      RAMA_MODULO: "18.0"
 
     steps:
 
@@ -23,7 +23,7 @@ jobs:
         cd l10n_co_base
         ls
 
-    # 2. Forzar a los submodulos a usar HTTPS (Se hace de esta forma para evitar error y usar la llave ya generada)    
+    # 2. Forzar a los submodulos a usar HTTPS (Se hace de esta forma para evitar error y usar el token ya generado)    
     - name: Forzar submódulos a usar HTTPS
       run: |
         git config --global url."https://x-access-token:${{ secrets.CLIENT_REPO_TOKEN }}@github.com/".insteadOf "git@github.com:"
@@ -59,14 +59,14 @@ jobs:
           fi
         done
 
-      # 6. Verificar Cambios
+    # 6. Verificar Cambios
     - name: Verificar Cambios
       run: |
         cd cliente_repo
         git status
         cat l10n_co_base/__manifest__.py
 
-    # 4. Comentar los cambios realizados en las localizaciones
+    # 7. Comentar los cambios realizados en las localizaciones
     - name: Comentar Cambios
       run: |
         cd cliente_repo
@@ -75,7 +75,7 @@ jobs:
         git add .
         git commit -m "Actualización automática de localizaciones: $LOCALIZACIONES (rama $RAMA_MODULO)" || echo "Sin cambios"
 
-    # 6. Enviar Cambios
+    # 8. Enviar Cambios
     - name: Enviar Cambios
       run: |
         cd cliente_repo
