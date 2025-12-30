@@ -18,10 +18,6 @@ jobs:
     - name: Clonar Repositorio del cliente
       run: |
         git clone https://USERNAME:${{ secrets.CLIENT_REPO_TOKEN }}@github.com/Pragmatic-sebastian/trial-pruebas-github-actions.git --branch $AMBIENTE cliente_repo
-        cd cliente_repo
-        ls
-        cd l10n_co_base
-        ls
 
     # 2. Forzar a los submodulos a usar HTTPS (Se hace de esta forma para evitar error y usar el token ya generado)    
     - name: Forzar submódulos a usar HTTPS
@@ -40,8 +36,6 @@ jobs:
       run: |
         cd cliente_repo
         git submodule update $LOCALIZACIONES
-        cd l10n_co_base
-        ls
     
     # 5. Actualizar cada modulo de localizacion
     - name: Actualizar localizaciones
