@@ -10,7 +10,7 @@ jobs:
     env:
       AMBIENTE: "master"
       LOCALIZACIONES: "l10n_co_base l10n_co_cei l10n_co_payroll l10n_co_account l10n_co_esd"
-      RAMA_MODULO: "18.0"
+      RAMA_MODULO: "develop-18.0"
 
     steps:
 
