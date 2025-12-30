@@ -17,7 +17,7 @@ jobs:
     # 1. Clonacion de Repositorio de Cliente
     - name: Clonar Repositorio del cliente
       run: |
-        git clone https://USERNAME:${{ secrets.CLIENT_REPO_TOKEN }}@github.com:Pragmatic-sebastian/trial-pruebas-github-actions.git --branch $AMBIENTE cliente_repo
+        git clone https://USERNAME:${{ secrets.CLIENT_REPO_TOKEN }}@github.com/Pragmatic-sebastian/trial-pruebas-github-actions.git --branch $AMBIENTE cliente_repo
         cd cliente_repo
         ls
         cd l10n_co_base
