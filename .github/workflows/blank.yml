@@ -10,14 +10,14 @@ jobs:
     env:
       AMBIENTE: "master"
       LOCALIZACIONES: "l10n_co_base l10n_co_cei l10n_co_payroll"
-      RAMA_MODULO: "17.0"
+      RAMA_MODULO: "18.0"
 
     steps:
 
     # 1. Clonacion de Repositorio de Cliente
     - name: Clonar Repositorio del cliente
       run: |
-        git clone https://USERNAME:${{ secrets.CLIENT_REPO_TOKEN }}@github.com/Pragmatic-sebastian/trial-github-actions.git --branch $AMBIENTE cliente_repo
+        git clone https://USERNAME:${{ secrets.CLIENT_REPO_TOKEN }}@github.com:Pragmatic-sebastian/trial-pruebas-github-actions.git --branch $AMBIENTE cliente_repo
         cd cliente_repo
         ls
         cd l10n_co_base
